@@ -7,17 +7,13 @@ namespace Mk0.Tools.Password
 {
     public class PasswordStrength
     {
-        public double Score = 0;
+        private static int punkte = 0;
+        private static bool hatNummer = false;
+        private static bool hatLowercase = false;
+        private static bool hatUppercase = false;
+        private static bool hatSonderzeichen = false;
 
-        private int punkte = 0;
-        private double cardinality = 0;
-
-        private bool hatNummer = false;
-        private bool hatLowercase = false;
-        private bool hatUppercase = false;
-        private bool hatSonderzeichen = false;
-
-        public PasswordStrength(string password)
+        public static double Score(string password)
         {
             if (string.IsNullOrEmpty(password.Trim()))
             {
@@ -70,13 +66,14 @@ namespace Mk0.Tools.Password
                     }
                 }
             }
-            CalculateEntropy(password.Trim());
-            Score = (punkte + cardinality) / 2;
+            return (punkte + CalculateEntropy(password.Trim())) / 2;
         }
 
-        public void CalculateEntropy(string password)
+
+
+        private static double CalculateEntropy(string password)
         {
-            var cardinality = 0;
+            double cardinality = 0;
 
             if (password.Length >= 6 && hatLowercase && hatNummer && hatSonderzeichen && hatUppercase)
             {
@@ -104,8 +101,9 @@ namespace Mk0.Tools.Password
                     cardinality += 36;
                 }
 
-                this.cardinality = Math.Log(cardinality, 2) * password.Length;
+                cardinality = Math.Log(cardinality, 2) * password.Length;
             }
+            return cardinality;
         }
     }
 }
